@@ -4,9 +4,9 @@
 #include <speex/speex_preprocess.h>
 
 
-constexpr int SAMPLE_RATE = 16000;
-constexpr int FRAME_SIZE_MS = 32;
-constexpr int FRAME_SIZE = (SAMPLE_RATE * FRAME_SIZE_MS) / 1000;
+int SAMPLE_RATE = 16000;
+int FRAME_SIZE_MS = 32;
+int FRAME_SIZE = (SAMPLE_RATE * FRAME_SIZE_MS) / 1000;
 
 void process_audio_frame(short* in, short* out, SpeexPreprocessState* state) {
     speex_preprocess_run(state, in);
@@ -32,21 +32,10 @@ int main(int argc, char *argv[]) {
     // Configure the preprocessor for speech enhancement
     int denoise = 1;
     int noiseSuppress = -30; // in dB
-    int agc = 1;
-    int agcLevel = 8000; // target level in millibels
-    int vad = 1;
-    int dereverb = 1;
-    float dereverb_decay = 0.4f;
-    float dereverb_level = 0.3f;
 
     speex_preprocess_ctl(state, SPEEX_PREPROCESS_SET_DENOISE, &denoise);
     speex_preprocess_ctl(state, SPEEX_PREPROCESS_SET_NOISE_SUPPRESS, &noiseSuppress);
-    speex_preprocess_ctl(state, SPEEX_PREPROCESS_SET_AGC, &agc);
-    speex_preprocess_ctl(state, SPEEX_PREPROCESS_SET_AGC_LEVEL, &agcLevel);
-    speex_preprocess_ctl(state, SPEEX_PREPROCESS_SET_VAD, &vad);
-    speex_preprocess_ctl(state, SPEEX_PREPROCESS_SET_DEREVERB, &dereverb);
-    speex_preprocess_ctl(state, SPEEX_PREPROCESS_SET_DEREVERB_DECAY, &dereverb_decay);
-    speex_preprocess_ctl(state, SPEEX_PREPROCESS_SET_DEREVERB_LEVEL, &dereverb_level);
+
 
     while (input.read(reinterpret_cast<char*>(input_buffer.data()), FRAME_SIZE * sizeof(short))) {
         process_audio_frame(input_buffer.data(), output_buffer.data(), state);
